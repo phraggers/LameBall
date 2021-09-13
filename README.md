@@ -31,6 +31,3 @@ otherwise the paddle follows the mouse cursor
 ## NOTE
 Still a work in progress, it's a little buggy
 DON'T resize the window, it does weird things
-
-There's a possible memory leak:
-if the sound plays continually (More than single beep) just close the window!!!
