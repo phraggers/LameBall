@@ -14,9 +14,10 @@
 //TODO: https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt
 // SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt"); (alt: from char*, from RWops)
 // Community sourced SDL Controller config, maybe use Curl to download it (it gets updated)
-//TODO: Fix memory leak when audio bugs out
+//TODO: Fix memory leak when audio bugs out (limit audio buffer queue size)
 //TODO: finish Controller input controls
 //TODO: Cleanup main loop (there's some variables that do the same thing)
+//TODO: recalculate all the stuff that happens before game loop when window is resized
 
 int
 main(int argc, char **argv)
