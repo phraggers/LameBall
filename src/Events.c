@@ -153,6 +153,7 @@ LAM_HandleEvents()
           } break;
 
           case SDL_MOUSEMOTION:
+          case SDL_MOUSEWHEEL:
           {
               if(Application.MouseInWindow)
               {
