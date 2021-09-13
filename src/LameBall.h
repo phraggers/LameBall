@@ -54,7 +54,7 @@ typedef unsigned long long uint64;
 typedef float real32;
 typedef double real64;
 
-typedef uint8 bool;
+typedef int8 bool;
 
 #define KEYDOWN_COUNT 0xf
 
