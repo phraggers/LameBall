@@ -13,11 +13,11 @@ LAM_Keydown(SDL_Keycode Key)
     {
         if(Application.Keydowns[iKeydown] == Key)
         {
-            return true;
+            return 1;
         }
     }
 
-    return false;
+    return 0;
 }
 
 internal void
@@ -30,7 +30,7 @@ LAM_HandleEvents()
         {
           case SDL_QUIT:
           {
-              Application.Running = false;
+              Application.Running = 0;
           } break;
 
           case SDL_WINDOWEVENT:
@@ -48,13 +48,13 @@ LAM_HandleEvents()
                 {
                     //NOTE: This should never happen, just quit if it does.
                     SDL_Log("Unexpected Event: Window Hidden");
-                    Application.Running = false;
+                    Application.Running = 0;
                 } break;
                 
                 case SDL_WINDOWEVENT_EXPOSED:
                 {
-                    Application.Exposed = true;
-                    Application.Minimized = false;
+                    Application.Exposed = 1;
+                    Application.Minimized = 0;
                 } break;
 
                 case SDL_WINDOWEVENT_MOVED:
@@ -71,57 +71,57 @@ LAM_HandleEvents()
 
                 case SDL_WINDOWEVENT_MINIMIZED:
                 {
-                    Application.Exposed = false;
-                    Application.Minimized = true;
+                    Application.Exposed = 0;
+                    Application.Minimized = 1;
                 } break;
 
                 case SDL_WINDOWEVENT_MAXIMIZED:
                 {
-                    Application.Maximized = true;
+                    Application.Maximized = 1;
                 } break;
 
                 case SDL_WINDOWEVENT_RESTORED:
                 {
-                    Application.Minimized = false;
-                    Application.Maximized = false;
+                    Application.Minimized = 0;
+                    Application.Maximized = 0;
                 } break;
 
                 case SDL_WINDOWEVENT_ENTER:
                 {
-                    Application.MouseInWindow = true;
+                    Application.MouseInWindow = 1;
                 } break;
 
                 case SDL_WINDOWEVENT_LEAVE:
                 {
-                    Application.MouseInWindow = false;
+                    Application.MouseInWindow = 0;
                 } break;
 
                 case SDL_WINDOWEVENT_FOCUS_GAINED:
                 {
-                    Application.KeyboardFocus = true;
+                    Application.KeyboardFocus = 1;
                 } break;
 
                 case SDL_WINDOWEVENT_FOCUS_LOST:
                 {
-                    Application.KeyboardFocus = false;
+                    Application.KeyboardFocus = 0;
                 } break;
 
                 case SDL_WINDOWEVENT_CLOSE:
                 {
-                    Application.Running = false;
+                    Application.Running = 0;
                 } break;
               }
           } break;
 
           case SDL_KEYDOWN:
           {
-              bool KeydownExists = false;
+              bool KeydownExists = 0;
 
               for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
               {
                   if(Application.Keydowns[iKeydown] == Event.key.keysym.sym)
                   {
-                      KeydownExists = true;
+                      KeydownExists = 1;
                       break;
                   }
               }

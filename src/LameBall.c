@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include "LameBall.h"
-#include "Events.cpp"
+#include "Events.c"
 
 //TODO: https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt
 // SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt"); (alt: from char*, from RWops)
@@ -22,7 +22,7 @@
 int
 main(int argc, char **argv)
 {
-    Application = {};
+    SDL_memset(&Application, 0, sizeof(Application));
     Application.Dimension.x = SDL_WINDOWPOS_UNDEFINED;
     Application.Dimension.y = SDL_WINDOWPOS_UNDEFINED;
     Application.Dimension.w = 1280;
@@ -55,7 +55,7 @@ main(int argc, char **argv)
 
             if(Application.Renderer)
             {
-                Application.Running = true;
+                Application.Running = 1;
 
                 //TEST: controller
                 SDL_GameController *Controller = 0;
@@ -66,13 +66,15 @@ main(int argc, char **argv)
                                                          SDL_TEXTUREACCESS_TARGET,
                                                          Application.Dimension.w,
                                                          Application.Dimension.h);
-                SDL_Rect PlayerRect = {};
+                SDL_Rect PlayerRect;
+                SDL_memset(&PlayerRect, 0, sizeof(SDL_Rect));
                 PlayerRect.w = 25;
                 PlayerRect.h = 120;
                 int PlayerRectSpeed = 10;
                 bool BouncePlayerHit = 0;
                     
-                SDL_Rect BounceRect = {};
+                SDL_Rect BounceRect;
+                SDL_memset(&BounceRect, 0, sizeof(SDL_Rect));
                 BounceRect.w = 20;
                 BounceRect.h = 20;
                 BounceRect.x = (Application.Dimension.w/2) - (BounceRect.w/2);
@@ -97,39 +99,39 @@ main(int argc, char **argv)
                 {
                     int x = (Application.Dimension.w/2)+200;
                     int y = Application.Dimension.h/2;
-                    SevenSegU[0] = {(x-10)-60,(y-50)-60,20,100};
-                    SevenSegU[1] = {(x-10)-60,(y-50)+60,20,100};
-                    SevenSegU[2] = {x-50,(y-10)-120,100,20};
-                    SevenSegU[3] = {x-50,y-10,100,20};
-                    SevenSegU[4] = {x-50,(y-10)+120,100,20};
-                    SevenSegU[5] = {(x-10)+60,(y-50)-60,20,100};
-                    SevenSegU[6] = {(x-10)+60,(y-50)+60,20,100};
+                    SevenSegU[0] = (SDL_Rect){(x-10)-60,(y-50)-60,20,100};
+                    SevenSegU[1] = (SDL_Rect){(x-10)-60,(y-50)+60,20,100};
+                    SevenSegU[2] = (SDL_Rect){x-50,(y-10)-120,100,20};
+                    SevenSegU[3] = (SDL_Rect){x-50,y-10,100,20};
+                    SevenSegU[4] = (SDL_Rect){x-50,(y-10)+120,100,20};
+                    SevenSegU[5] = (SDL_Rect){(x-10)+60,(y-50)-60,20,100};
+                    SevenSegU[6] = (SDL_Rect){(x-10)+60,(y-50)+60,20,100};
                 }
                     
                 SDL_Rect SevenSegT[7];
                 {
                     int x = Application.Dimension.w/2;
                     int y = Application.Dimension.h/2;
-                    SevenSegT[0] = {(x-10)-60,(y-50)-60,20,100};
-                    SevenSegT[1] = {(x-10)-60,(y-50)+60,20,100};
-                    SevenSegT[2] = {x-50,(y-10)-120,100,20};
-                    SevenSegT[3] = {x-50,y-10,100,20};
-                    SevenSegT[4] = {x-50,(y-10)+120,100,20};
-                    SevenSegT[5] = {(x-10)+60,(y-50)-60,20,100};
-                    SevenSegT[6] = {(x-10)+60,(y-50)+60,20,100};
+                    SevenSegT[0] = (SDL_Rect){(x-10)-60,(y-50)-60,20,100};
+                    SevenSegT[1] = (SDL_Rect){(x-10)-60,(y-50)+60,20,100};
+                    SevenSegT[2] = (SDL_Rect){x-50,(y-10)-120,100,20};
+                    SevenSegT[3] = (SDL_Rect){x-50,y-10,100,20};
+                    SevenSegT[4] = (SDL_Rect){x-50,(y-10)+120,100,20};
+                    SevenSegT[5] = (SDL_Rect){(x-10)+60,(y-50)-60,20,100};
+                    SevenSegT[6] = (SDL_Rect){(x-10)+60,(y-50)+60,20,100};
                 }
 
                 SDL_Rect SevenSegH[7];
                 {
                     int x = (Application.Dimension.w/2)-200;
                     int y = Application.Dimension.h/2;
-                    SevenSegH[0] = {(x-10)-60,(y-50)-60,20,100};
-                    SevenSegH[1] = {(x-10)-60,(y-50)+60,20,100};
-                    SevenSegH[2] = {x-50,(y-10)-120,100,20};
-                    SevenSegH[3] = {x-50,y-10,100,20};
-                    SevenSegH[4] = {x-50,(y-10)+120,100,20};
-                    SevenSegH[5] = {(x-10)+60,(y-50)-60,20,100};
-                    SevenSegH[6] = {(x-10)+60,(y-50)+60,20,100};
+                    SevenSegH[0] = (SDL_Rect){(x-10)-60,(y-50)-60,20,100};
+                    SevenSegH[1] = (SDL_Rect){(x-10)-60,(y-50)+60,20,100};
+                    SevenSegH[2] = (SDL_Rect){x-50,(y-10)-120,100,20};
+                    SevenSegH[3] = (SDL_Rect){x-50,y-10,100,20};
+                    SevenSegH[4] = (SDL_Rect){x-50,(y-10)+120,100,20};
+                    SevenSegH[5] = (SDL_Rect){(x-10)+60,(y-50)-60,20,100};
+                    SevenSegH[6] = (SDL_Rect){(x-10)+60,(y-50)+60,20,100};
                 }
 
                 //TEST: High Score 7-seg display (Units, Tens, Hundreds)
@@ -137,39 +139,39 @@ main(int argc, char **argv)
                 {
                     int x = (Application.Dimension.w/2)+100;
                     int y = Application.Dimension.h - (Application.Dimension.h/8);
-                    SevenSegHSU[0] = {(x-5)-30,(y-25)-30,10,50};
-                    SevenSegHSU[1] = {(x-5)-30,(y-25)+30,10,50};
-                    SevenSegHSU[2] = {x-25,(y-5)-60,50,10};
-                    SevenSegHSU[3] = {x-25,y-5,50,10};
-                    SevenSegHSU[4] = {x-25,(y-5)+60,50,10};
-                    SevenSegHSU[5] = {(x-5)+30,(y-25)-30,10,50};
-                    SevenSegHSU[6] = {(x-5)+30,(y-25)+30,10,50};
+                    SevenSegHSU[0] = (SDL_Rect){(x-5)-30,(y-25)-30,10,50};
+                    SevenSegHSU[1] = (SDL_Rect){(x-5)-30,(y-25)+30,10,50};
+                    SevenSegHSU[2] = (SDL_Rect){x-25,(y-5)-60,50,10};
+                    SevenSegHSU[3] = (SDL_Rect){x-25,y-5,50,10};
+                    SevenSegHSU[4] = (SDL_Rect){x-25,(y-5)+60,50,10};
+                    SevenSegHSU[5] = (SDL_Rect){(x-5)+30,(y-25)-30,10,50};
+                    SevenSegHSU[6] = (SDL_Rect){(x-5)+30,(y-25)+30,10,50};
                 }
                     
                 SDL_Rect SevenSegHST[7];
                 {
                     int x = Application.Dimension.w/2;
                     int y = Application.Dimension.h - (Application.Dimension.h/8);
-                    SevenSegHST[0] = {(x-5)-30,(y-25)-30,10,50};
-                    SevenSegHST[1] = {(x-5)-30,(y-25)+30,10,50};
-                    SevenSegHST[2] = {x-25,(y-5)-60,50,10};
-                    SevenSegHST[3] = {x-25,y-5,50,10};
-                    SevenSegHST[4] = {x-25,(y-5)+60,50,10};
-                    SevenSegHST[5] = {(x-5)+30,(y-25)-30,10,50};
-                    SevenSegHST[6] = {(x-5)+30,(y-25)+30,10,50};
+                    SevenSegHST[0] = (SDL_Rect){(x-5)-30,(y-25)-30,10,50};
+                    SevenSegHST[1] = (SDL_Rect){(x-5)-30,(y-25)+30,10,50};
+                    SevenSegHST[2] = (SDL_Rect){x-25,(y-5)-60,50,10};
+                    SevenSegHST[3] = (SDL_Rect){x-25,y-5,50,10};
+                    SevenSegHST[4] = (SDL_Rect){x-25,(y-5)+60,50,10};
+                    SevenSegHST[5] = (SDL_Rect){(x-5)+30,(y-25)-30,10,50};
+                    SevenSegHST[6] = (SDL_Rect){(x-5)+30,(y-25)+30,10,50};
                 }
 
                 SDL_Rect SevenSegHSH[7];
                 {
                     int x = (Application.Dimension.w/2)-100;
                     int y = Application.Dimension.h - (Application.Dimension.h/8);
-                    SevenSegHSH[0] = {(x-5)-30,(y-25)-30,10,50};
-                    SevenSegHSH[1] = {(x-5)-30,(y-25)+30,10,50};
-                    SevenSegHSH[2] = {x-25,(y-5)-60,50,10};
-                    SevenSegHSH[3] = {x-25,y-5,50,10};
-                    SevenSegHSH[4] = {x-25,(y-5)+60,50,10};
-                    SevenSegHSH[5] = {(x-5)+30,(y-25)-30,10,50};
-                    SevenSegHSH[6] = {(x-5)+30,(y-25)+30,10,50};
+                    SevenSegHSH[0] = (SDL_Rect){(x-5)-30,(y-25)-30,10,50};
+                    SevenSegHSH[1] = (SDL_Rect){(x-5)-30,(y-25)+30,10,50};
+                    SevenSegHSH[2] = (SDL_Rect){x-25,(y-5)-60,50,10};
+                    SevenSegHSH[3] = (SDL_Rect){x-25,y-5,50,10};
+                    SevenSegHSH[4] = (SDL_Rect){x-25,(y-5)+60,50,10};
+                    SevenSegHSH[5] = (SDL_Rect){(x-5)+30,(y-25)-30,10,50};
+                    SevenSegHSH[6] = (SDL_Rect){(x-5)+30,(y-25)+30,10,50};
                 }
 
                 bool SevenSegLayout[10][7] = {
@@ -185,8 +187,10 @@ main(int argc, char **argv)
                   {1,0,1,1,0,1,1}}; //9
 
                 //TEST: audio
-                SDL_AudioDeviceID AudioDevice = {};
-                SDL_AudioSpec AudioSpec = {};
+                SDL_AudioDeviceID AudioDevice;
+                SDL_memset(&AudioDevice, 0, sizeof(SDL_AudioDeviceID));
+                SDL_AudioSpec AudioSpec;
+                SDL_memset(&AudioSpec, 0, sizeof(SDL_AudioSpec));
                 AudioSpec.freq = 48000;
                 AudioSpec.format = AUDIO_S16SYS;
                 AudioSpec.channels = 2;
@@ -349,7 +353,8 @@ main(int argc, char **argv)
                         BounceRectDown = 1;
                     }
 
-                    SDL_Rect Intersect = {};
+                    SDL_Rect Intersect;
+                    SDL_memset(&Intersect, 0, sizeof(SDL_Rect));
                     //TEST: BounceRect intersect PlayerRect
                     if(SDL_IntersectRect(&PlayerRect, &BounceRect, &Intersect))
                     {
@@ -381,7 +386,7 @@ main(int argc, char **argv)
 
                     else
                     {
-                        Intersect = {};
+                        SDL_memset(&Intersect, 0, sizeof(SDL_Rect));
                         if(BouncePlayerHit) BounceRectSpeed++;
                         if(BouncePlayerHit) BounceBouncedPlayer = 1;
                         BouncePlayerHit = 0;
@@ -546,13 +551,6 @@ main(int argc, char **argv)
                         
                     uint64 Timer_EndPerf = SDL_GetPerformanceCounter();
                     uint64 Timer_FramePerf = Timer_EndPerf - Timer_StartPerf;
-
-                    char str[128];
-                    sprintf_s(str, "LameBall [%.0ffps]", Timer_10SecAvgFPS);
-                    SDL_SetWindowTitle(Application.Window, str);
-
-                    //SDL_Log("AvgFPS(10sec):%f, AvgFPS(Total): %f, Perf: %d",
-                    //      Timer_10SecAvgFPS, Timer_AvgFPS, Timer_FramePerf);
 
                     if(Timer_10SecTotalFrameTicks >= 10000)
                     {
