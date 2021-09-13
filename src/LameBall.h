@@ -68,9 +68,11 @@ Lam_Application
     bool Exposed;
     bool Minimized;
     bool Maximized;
+    bool Fullscreen;
     bool MouseInWindow;
     bool KeyboardFocus;
     SDL_Keycode Keydowns[KEYDOWN_COUNT];
+    bool DisableMouse;
     int MouseX;
     int MouseY;
     bool MouseLeft;

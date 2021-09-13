@@ -6,6 +6,63 @@
    $Notice:  (c)Phragware 2021 $
    ======================================================================== */
 
+internal void
+LAM_SetKeyUp(SDL_Keycode Key)
+{
+    for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+    {
+        if(Application.Keydowns[iKeydown] == Key)
+        {
+            Application.Keydowns[iKeydown] = 0;
+            break;
+        }
+    }
+    
+}
+
+internal void
+LAM_SetKeyDown(SDL_Keycode Key)
+{
+    bool KeydownExists = 0;
+
+    for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+    {
+        if(Application.Keydowns[iKeydown] == Key)
+        {
+            KeydownExists = 1;
+            break;
+        }
+    }
+
+    if(!KeydownExists)
+    {
+        for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+        {
+            if(Application.Keydowns[iKeydown] == 0)
+            {
+                Application.Keydowns[iKeydown] = Key;
+                break;
+            }
+        }
+    }
+
+}
+
+internal bool
+LAM_KeySingle(SDL_Keycode Key)
+{
+    for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+    {
+        if(Application.Keydowns[iKeydown] == Key)
+        {
+            LAM_SetKeyUp(Key);
+            return 1;
+        }
+    }
+
+    return 0;    
+}
+
 internal bool
 LAM_Keydown(SDL_Keycode Key)
 {
@@ -115,41 +172,12 @@ LAM_HandleEvents()
 
           case SDL_KEYDOWN:
           {
-              bool KeydownExists = 0;
-
-              for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
-              {
-                  if(Application.Keydowns[iKeydown] == Event.key.keysym.sym)
-                  {
-                      KeydownExists = 1;
-                      break;
-                  }
-              }
-
-              if(!KeydownExists)
-              {
-                  for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
-                  {
-                      if(Application.Keydowns[iKeydown] == 0)
-                      {
-                          Application.Keydowns[iKeydown] = Event.key.keysym.sym;
-                          break;
-                      }
-                  }
-              }
+              LAM_SetKeyDown(Event.key.keysym.sym);
           } break;
 
           case SDL_KEYUP:
           {
-              for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
-              {
-                  if(Application.Keydowns[iKeydown] == Event.key.keysym.sym)
-                  {
-                      Application.Keydowns[iKeydown] = 0;
-                      break;
-                  }
-              }
-              
+              LAM_SetKeyUp(Event.key.keysym.sym);
           } break;
 
           case SDL_MOUSEMOTION:

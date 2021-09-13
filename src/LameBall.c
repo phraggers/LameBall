@@ -268,8 +268,36 @@ main(int argc, char **argv)
                         else PlayerRect.y += PlayerRectSpeed;
                     }
 
+                    if(LAM_Keydown(SDLK_F11))
+                    {
+                        if(Application.Fullscreen)
+                        {
+                            SDL_SetWindowFullscreen(Application.Window, 0);
+                            Application.Fullscreen = 0;
+                        }
+
+                        else
+                        {
+                            SDL_SetWindowFullscreen(Application.Window, 1);
+                            Application.Fullscreen = 1;
+                        }
+                    }
+
+                    if(LAM_Keydown(SDLK_LCTRL) && LAM_Keydown(SDLK_LSHIFT) &&
+                       LAM_KeySingle(SDLK_F12))
+                    {
+                        int X = BounceRectSpeed%10;
+                        int Y = 10 - X;
+                        BounceRectSpeed += Y;
+                    }
+
+                    if(LAM_KeySingle(SDLK_F1))
+                    {
+                        Application.DisableMouse = !Application.DisableMouse;
+                    }
+
                     //NOTE: Mouse
-                    if(Application.MouseInWindow)
+                    if(!Application.DisableMouse && Application.MouseInWindow)
                     {
                         int MouseSpeed = PlayerRectSpeed/2;
                             
@@ -418,15 +446,13 @@ main(int argc, char **argv)
                             Samples[0] = SampleValue;
                             Samples[1] = SampleValue;
                             tSine += (PI32 * 2.0f) * (1.0f / (real32)WavePeriod);
-                            if(SDL_GetQueuedAudioSize(AudioDevice) < 1024)
+                            if(SDL_GetQueuedAudioSize(AudioDevice) < 1024*256)
                                 SDL_QueueAudio(AudioDevice, &Samples[0], sizeof(int16)*2);
                         }
                     }
 
-                    //TEST: draw to screen
+                    //TEST: draw to texture
                     SDL_SetRenderTarget(Application.Renderer, Texture);
-                    SDL_SetRenderDrawColor(Application.Renderer, 0,0,0,0);
-                    SDL_RenderClear(Application.Renderer);
 
                     // Goal Indicator
                     if(BounceBouncedGoal)
@@ -436,6 +462,12 @@ main(int argc, char **argv)
                         BounceBouncedGoal = 0;
                         if(BounceRectSpeed%10 != 0)BounceRectSpeed--;
                         if(!BounceRectSpeed) BounceRectSpeed = 1;
+                    }
+
+                    else
+                    {
+                        SDL_SetRenderDrawColor(Application.Renderer, 0,0,0,0);
+                        SDL_RenderClear(Application.Renderer);                        
                     }
 
                     //TEST: Draw 7-seg display for BounceRectSpeed

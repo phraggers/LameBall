@@ -1,8 +1,8 @@
 # LameBall
 
-I accidentally made this game.
+I accidentally made this game while testing some code.
 
-It's kind of a cross between Pong and Breakout.
+It's kind of a cross between Pong and Breakout, mixed with Squash/Racquetball.
 
 [>> DOWNLOAD <<](https://github.com/phraggers/LameBall/releases/download/v0.2/LameBall_v0.2.rar)
 
@@ -19,17 +19,31 @@ Don't let the ball (red cube) hit the Goal (maroon bar)
 ![alt text](https://raw.githubusercontent.com/phraggers/LameBall/main/LameBallDemo.gif)
 
 ## Controls:
-CONTROL | KEYBOARD | CONTROLLER | MOUSE
---------|----------|------------|------------
-Up      |  W/UP    | Dpad Up    | Pointer
-Down    |  S/DOWN  | Dpad Down  | Pointer
-Boost   |  Shift   | (Todo)     | LeftClick
-Finesse |  Ctrl    | (Todo)     | RightClick
+   CONTROL   | KEYBOARD | CONTROLLER | MOUSE
+-------------|----------|------------|------------
+Up           |  W/UP    | Dpad Up    | Pointer
+Down         |  S/DOWN  | Dpad Down  | Pointer
+Boost        |  Shift   | (Todo)     | LeftClick
+Finesse      |  Ctrl    | (Todo)     | RightClick
+Toggle Mouse |  F1      |  (N/A)     | (N/A)
+Fullscreen   |  F11     |  (N/A)     | (N/A)
 
-Move mouse out of the window if you aren't using it
+Press F1 (Toggle Mouse) if you aren't using Mouse
 otherwise the paddle follows the mouse cursor
-(Might make an option to toggle mouse input later)
 
-## NOTE
+## Update Notes
 Still a work in progress, it's a little buggy
 DON'T resize the window, it does weird things
+
+### v0.3
+- Added Toggle Fullscreen (Press F11)
+- Added Toggle Disable Mouse (Press F1)
+- Updated Keydown detection to allow system-default Keydown repeat delay
+- Increased audio buffer size (Accidentally cut it too short before)
+
+### v0.2
+- Changed all C++ code to pure C
+- Added limit to audio buffer to prevent infinitely increasing buffer queue
+
+### v0.1
+- Initial commit
