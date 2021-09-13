@@ -17,6 +17,7 @@ Don't let the ball (red cube) hit the Goal (maroon bar)
 - The higher your score the faster the ball goes
 
 ![alt text](https://raw.githubusercontent.com/phraggers/LameBall/main/Screenshot_2021-09-13_042319.png)
+![alt text](https://raw.githubusercontent.com/phraggers/LameBall/main/LameBallDemo.gif)
 
 ## Controls:
 CONTROL | KEYBOARD | CONTROLLER | MOUSE
