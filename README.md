@@ -4,6 +4,8 @@ I accidentally made this game.
 
 It's kind of a cross between Pong and Breakout.
 
+[>> DOWNLOAD <<](https://github.com/phraggers/LameBall/releases/download/v0.2/LameBall_v0.2.rar)
+
 Your paddle is on the left on the screen.
 Don't let the ball (red cube) hit the Goal (maroon bar)
 - You gain a point when you defend the goal
