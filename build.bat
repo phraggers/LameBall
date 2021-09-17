@@ -5,11 +5,11 @@ set ProjectName=LameBall
 if not exist w:\build mkdir w:\build
 del w:\build\%ProjectName%.exe
 
-::set InternalDefines=-DDEBUG=1
-::set CompilerSwitches=-nologo -W4 -wd4201 -wd4100 -wd4189 -FC -Fmwin32_%ProjectName%.map -Z7 -Od -Oi -GR- -Gm- -EHa- -MT
-set InternalDefines=
-set CompilerSwitches=-nologo -W4 -wd4201 -wd4100 -wd4189 -FC -Oi -GR- -Gm- -EHa- -MT -O2
-set CompilerInput=w:\src\%ProjectName%.c
+set InternalDefines=-DDEBUG=1
+set CompilerSwitches=-nologo -W4 -wd4201 -wd4100 -wd4189 -FC -Fmwin32_%ProjectName%.map -Z7 -Od -Oi -GR- -Gm- -EHa- -MT
+::set InternalDefines=
+::set CompilerSwitches=-nologo -W4 -wd4201 -wd4100 -wd4189 -FC -Oi -GR- -Gm- -EHa- -MT -O2
+set CompilerInput=w:\%ProjectName%.c
 set LinkerOptions=-subsystem:windows -opt:ref
 set LinkerLibs=user32.lib gdi32.lib shell32.lib SDL2main.lib SDL2.lib
 ::SDL2_image.lib SDL2_mixer.lib SDL2_net.lib SDL2_net.lib

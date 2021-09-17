@@ -1,22 +1,276 @@
 /* ========================================================================
-   $File:    LameBall [Source] $
+   $File:    LameBall.c $
    $Project: LameBall $
    $Date:    08-09-2021 $
    $Author:  Phil Bagshaw $
    $Notice:  (c)Phragware 2021 $
    ======================================================================== */
 
-#include <stdio.h>
 #include <SDL/SDL.h>
-#include "LameBall.h"
 #include "Events.c"
-
 //TODO: https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt
 // SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt"); (alt: from char*, from RWops)
 // Community sourced SDL Controller config, maybe use Curl to download it (it gets updated)
 //TODO: finish Controller input controls
 //TODO: Cleanup main loop (there's some variables that do the same thing)
 //TODO: recalculate all the stuff that happens before game loop when window is resized
+
+#define internal static
+#define persist static
+#define global static
+#define INT8_MIN -0x80
+#define INT8_MAX 0x7f
+#define UINT8_MAX 0xffU
+#define INT16_MIN -0x8000
+#define INT16_MAX 0x7fff
+#define UINT16_MAX 0xffffU
+#define INT32_MIN -0x80000000LL
+#define INT32_MAX 0x7FFFFFFFLL
+#define UINT32_MAX 0xffffffffULL
+#define INT64_MIN -0x8000000000000000LL
+#define INT64_MAX 0x7FFFFFFFFFFFFFFFLL
+#define UINT64_MAX 0xffffffffffffffffULL
+#define REAL32_MIN 1.17549e-038f
+#define REAL32_MAX 3.40282e+038f
+#define REAL64_MIN 2.22507e-308
+#define REAL64_MAX 1.79769e+308
+typedef char int8;
+typedef unsigned char uint8;
+typedef short int16;
+typedef unsigned short uint16;
+typedef int int32;
+typedef unsigned int uint32;
+typedef long long int64;
+typedef unsigned long long uint64;
+typedef float real32;
+typedef double real64;
+typedef int8 bool;
+
+#define KEYDOWN_COUNT 0xf
+global struct
+Lam_Application
+{
+    SDL_Window *Window;
+    SDL_Renderer *Renderer;
+    SDL_Rect Dimension;
+    bool Running;
+    bool Exposed;
+    bool Minimized;
+    bool Maximized;
+    bool Fullscreen;
+    bool MouseInWindow;
+    bool KeyboardFocus;
+    SDL_Keycode Keydowns[KEYDOWN_COUNT];
+    bool DisableMouse;
+    int MouseX;
+    int MouseY;
+    bool MouseLeft;
+    bool MouseRight;
+} Application;
+
+internal void
+LAM_SetKeyUp(SDL_Keycode Key)
+{
+    for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+    {
+        if(Application.Keydowns[iKeydown] == Key)
+        {
+            Application.Keydowns[iKeydown] = 0;
+            break;
+        }
+    }
+    
+}
+
+internal void
+LAM_SetKeyDown(SDL_Keycode Key)
+{
+    bool KeydownExists = 0;
+
+    for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+    {
+        if(Application.Keydowns[iKeydown] == Key)
+        {
+            KeydownExists = 1;
+            break;
+        }
+    }
+
+    if(!KeydownExists)
+    {
+        for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+        {
+            if(Application.Keydowns[iKeydown] == 0)
+            {
+                Application.Keydowns[iKeydown] = Key;
+                break;
+            }
+        }
+    }
+
+}
+
+internal bool
+LAM_KeySingle(SDL_Keycode Key)
+{
+    for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+    {
+        if(Application.Keydowns[iKeydown] == Key)
+        {
+            LAM_SetKeyUp(Key);
+            return 1;
+        }
+    }
+
+    return 0;    
+}
+
+internal bool
+LAM_Keydown(SDL_Keycode Key)
+{
+    for(int iKeydown = 0; iKeydown < KEYDOWN_COUNT; ++iKeydown)
+    {
+        if(Application.Keydowns[iKeydown] == Key)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+internal void
+LAM_HandleEvents()
+{
+    SDL_Event Event;
+    while(SDL_PollEvent(&Event))
+    {
+        switch(Event.type)
+        {
+          case SDL_QUIT:
+          {
+              Application.Running = 0;
+          } break;
+
+          case SDL_WINDOWEVENT:
+          {
+              switch(Event.window.event)
+              {
+                case SDL_WINDOWEVENT_SHOWN:
+                {
+                    //NOTE: Should only happen at startup.
+                    // This is NOT the same as EXPOSED
+                    SDL_Log("Event: Window Shown");
+                } break;
+                
+                case SDL_WINDOWEVENT_HIDDEN:
+                {
+                    //NOTE: This should never happen, just quit if it does.
+                    SDL_Log("Unexpected Event: Window Hidden");
+                    Application.Running = 0;
+                } break;
+                
+                case SDL_WINDOWEVENT_EXPOSED:
+                {
+                    Application.Exposed = 1;
+                    Application.Minimized = 0;
+                } break;
+
+                case SDL_WINDOWEVENT_MOVED:
+                {
+                    Application.Dimension.x = Event.window.data1;
+                    Application.Dimension.y = Event.window.data2;
+                } break;
+
+                case SDL_WINDOWEVENT_SIZE_CHANGED:
+                {
+                    Application.Dimension.w = Event.window.data1;
+                    Application.Dimension.h = Event.window.data2;
+                } break;
+
+                case SDL_WINDOWEVENT_MINIMIZED:
+                {
+                    Application.Exposed = 0;
+                    Application.Minimized = 1;
+                } break;
+
+                case SDL_WINDOWEVENT_MAXIMIZED:
+                {
+                    Application.Maximized = 1;
+                } break;
+
+                case SDL_WINDOWEVENT_RESTORED:
+                {
+                    Application.Minimized = 0;
+                    Application.Maximized = 0;
+                } break;
+
+                case SDL_WINDOWEVENT_ENTER:
+                {
+                    Application.MouseInWindow = 1;
+                } break;
+
+                case SDL_WINDOWEVENT_LEAVE:
+                {
+                    Application.MouseInWindow = 0;
+                } break;
+
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
+                {
+                    Application.KeyboardFocus = 1;
+                } break;
+
+                case SDL_WINDOWEVENT_FOCUS_LOST:
+                {
+                    Application.KeyboardFocus = 0;
+                } break;
+
+                case SDL_WINDOWEVENT_CLOSE:
+                {
+                    Application.Running = 0;
+                } break;
+              }
+          } break;
+
+          case SDL_KEYDOWN:
+          {
+              LAM_SetKeyDown(Event.key.keysym.sym);
+          } break;
+
+          case SDL_KEYUP:
+          {
+              LAM_SetKeyUp(Event.key.keysym.sym);
+          } break;
+
+          case SDL_MOUSEMOTION:
+          case SDL_MOUSEWHEEL:
+          {
+              if(Application.MouseInWindow)
+              {
+                  SDL_GetMouseState(&Application.MouseX, &Application.MouseY);
+              }
+          } break;
+
+          case SDL_MOUSEBUTTONDOWN:
+          {
+              if(Event.button.button == SDL_BUTTON_LEFT) Application.MouseLeft = 1;
+              if(Event.button.button == SDL_BUTTON_RIGHT) Application.MouseRight = 1;
+          } break;
+
+          case SDL_MOUSEBUTTONUP:
+          {
+              if(Event.button.button == SDL_BUTTON_LEFT) Application.MouseLeft = 0;
+              if(Event.button.button == SDL_BUTTON_RIGHT) Application.MouseRight = 0;
+          } break;
+
+
+          default:
+          {
+              break;
+          }
+        }
+    } // while PollEvent
+}
 
 int
 main(int argc, char **argv)
@@ -196,6 +450,8 @@ main(int argc, char **argv)
                 AudioSpec.samples = 512;
                 AudioDevice = SDL_OpenAudioDevice(0, 0, &AudioSpec, 0, 0);
                 SDL_PauseAudioDevice(AudioDevice, 0);
+				real32 tSine = 0;
+				int ToneFreq = 500;
 
                 //NOTE: FrameTiming
                 uint32 Timer_TotalFrameTicks = 0;
@@ -426,16 +682,26 @@ main(int argc, char **argv)
                     if(BounceBounced || BounceBouncedPlayer ||
                        BounceBouncedGoal || BouncePlayerHit)
                     {
-                        persist int ToneFreq = 500;
-                        persist real32 tSine;
-                        if(BounceBounced) ToneFreq = 440;
-                        if(BounceBouncedPlayer || BouncePlayerHit) ToneFreq = 880;
-                        if(BounceBouncedGoal) ToneFreq = 220;
-                        if(BounceBounced) BounceBounced = 0;
-                        if(BounceBouncedPlayer || BouncePlayerHit) BounceBouncedPlayer = 0;
-                        int Div = 25;
-                        if(BounceBouncedGoal) Div = 6;
-                        if(!tSine) tSine = 0;
+						int Div = 25;
+					
+                        if(BounceBouncedPlayer || BouncePlayerHit)
+						{
+							ToneFreq = 880;
+							BounceBouncedPlayer = 0;
+						}
+						
+						if(BounceBounced)
+						{
+							ToneFreq = 440;
+							BounceBounced = 0;
+						}
+						
+						if(BounceBouncedGoal)
+						{
+							ToneFreq = 220;
+							Div = 6;
+						}
+                         
                         int16 Volume = 1000;
                         int WavePeriod = AudioSpec.freq/ToneFreq;
                         for(int i = 0; i < (AudioSpec.freq/Div); i++)
@@ -445,7 +711,7 @@ main(int argc, char **argv)
                             int16 Samples[2];
                             Samples[0] = SampleValue;
                             Samples[1] = SampleValue;
-                            tSine += (PI32 * 2.0f) * (1.0f / (real32)WavePeriod);
+                            tSine += ((real32)M_PI * 2.0f) * (1.0f / (real32)WavePeriod);
                             if(SDL_GetQueuedAudioSize(AudioDevice) < 1024*256)
                                 SDL_QueueAudio(AudioDevice, &Samples[0], sizeof(int16)*2);
                         }

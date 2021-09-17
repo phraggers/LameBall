@@ -4,8 +4,16 @@ I accidentally made this game while testing some code.
 
 It's kind of a cross between Pong and Breakout, mixed with Squash/Racquetball.
 
-[>> DOWNLOAD <<](https://github.com/phraggers/LameBall/releases/download/v0.2/LameBall_v0.2.rar)
+[>> DOWNLOAD <<](https://github.com/phraggers/LameBall/releases/download/v0.3/LameBall_v0.3.rar)
 
+## Features
+- It's TINY! (NO image files, NO audio files, everything is hand-coded from bits n bytes)
+- It's FUN! (I made it by mistake just testing some code and ended up playing it for almost an hour!)
+- It's FRUSTRATING! (After around 30 points it gets really hard)
+- It breaks if you resize the window! (Yeah I'll fix that. F11 fullscreen works fine though)
+- Feedback appreciated! phil at prbagshaw dote com
+
+## How To Play
 Your paddle is on the left on the screen.
 Don't let the ball (red cube) hit the Goal (maroon bar)
 - You gain a point when you defend the goal
