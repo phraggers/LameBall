@@ -10,8 +10,6 @@ It's kind of a cross between Pong and Breakout, mixed with Squash/Racquetball.
 - It's TINY! (NO image files, NO audio files, everything is hand-coded from bits n bytes)
 - It's FUN! (I made it by mistake just testing some code and ended up playing it for almost an hour!)
 - It's FRUSTRATING! (After around 30 points it gets really hard)
-- It breaks if you resize the window! (Yeah I'll fix that. F11 fullscreen works fine though)
-- Feedback appreciated! phil at prbagshaw dote com
 
 ## How To Play
 Your paddle is on the left on the screen.
@@ -24,7 +22,7 @@ Don't let the ball (red cube) hit the Goal (maroon bar)
 - The little green number is best score
 - The higher your score the faster the ball goes
 
-![alt text](https://raw.githubusercontent.com/phraggers/LameBall/main/LameBallDemo.gif)
+![alt text](https://raw.githubusercontent.com/phraggers/LameBall/main/misc/LameBallDemo.gif)
 
 ## Controls:
    CONTROL   | KEYBOARD | CONTROLLER | MOUSE

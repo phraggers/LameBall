@@ -1,41 +1,65 @@
 @echo off
+pushd %~dp0
 
-set ProjectName=LameBall
+:DoStart
+where /q cl.exe || goto DoSetVCVars
+if not exist build mkdir build
+pushd build
 
-if not exist w:\build mkdir w:\build
-del w:\build\%ProjectName%.exe
+set OUTNAME=PhraglibTest
+set DEBUG_BUILD=1
+set SRC_NAME=lameball.c
 
-set InternalDefines=-DDEBUG=1
-set CompilerSwitches=-nologo -W4 -wd4201 -wd4100 -wd4189 -FC -Fmwin32_%ProjectName%.map -Z7 -Od -Oi -GR- -Gm- -EHa- -MT
-::set InternalDefines=
-::set CompilerSwitches=-nologo -W4 -wd4201 -wd4100 -wd4189 -FC -Oi -GR- -Gm- -EHa- -MT -O2
-set CompilerInput=w:\%ProjectName%.c
-set LinkerOptions=-subsystem:windows -opt:ref
-set LinkerLibs=user32.lib gdi32.lib shell32.lib SDL2main.lib SDL2.lib
-::SDL2_image.lib SDL2_mixer.lib SDL2_net.lib SDL2_net.lib
-set AdditionalIncludePaths=/I..\deps\include
-set AdditionalLibPaths=/LIBPATH:..\deps\lib
+set COPTS=-nologo -MT -Gm- -GR- -EHa -Oi -FC -W4 -wd4201 -wd4100 -wd4211
+set LINK=-subsystem:windows -opt:ref
+
+:DoBuild
+if %DEBUG_BUILD%==1 goto DoDebug
+if %DEBUG_BUILD%==0 goto DoRelease
+
+:DoDebug
 echo.
-pushd w:\build
-cl %InternalDefines% %CompilerSwitches% %AdditionalIncludePaths% %CompilerInput% /link %LinkerOptions% %AdditionalLibPaths% %LinkerLibs%
+echo ===== DEBUG =====
+echo.
+set DBG_COPTS=-Z7 -Fm %COPTS%
+set DBG_DEF=-DBUILD_DEBUG=1 -DWIN32
+del /q *.*
+cl -I..\src -Fe"%OUTNAME%.exe" %DBG_COPTS% %DBG_DEF% ..\src\%SRC_NAME% ..\src\PL\PL.c -link %LINK%
+del /q *.obj
+goto DoEnd
+
+:DoRelease
+echo.
+echo ===== RELEASE =====
+echo.
+set RLS_COPTS=-O2 %COPTS%
+set RLS_DEF=-DWIN32
+del /q *.*
+cl -I..\src -Fe"%OUTNAME%.exe" %RLS_COPTS% %RLS_DEF% ..\src\%SRC_NAME% ..\src\PL\PL.c -link %LINK%
+del /q *.obj
+goto DoEnd
+
+:DoSetVCVars
+echo == Searching for vcvarsall.bat ==
+set vcvarsallfile=
+pushd "c:\Program Files"
+for /f "delims=" %%a in ('dir vcvarsall* /s /p /b') do set "vcvarsallfile=%%a"
 popd
+call "%vcvarsallfile%" x64
+where /q cl.exe || goto DoErrorNoVCVars
+goto DoStart
 
-if not exist w:\build\%ProjectName%.exe exit /b 1
-exit /b 0
+:DoErrorNoVCVars
+echo.
+echo ERROR Could not find vcvarsall.bat
+echo either it is not on C: drive or VisualStudio is not installed.
+echo (or Microsoft have changed the vcvarsall.bat name in the future, which isn't totally unlikely)
+echo Ensure VisualStudio is installed in its default location first
+echo then run this bat again. Exiting.
+echo.
+pause
+goto DoEnd
 
-:: W4 = warning level 4
-:: wd(num) = ignore specific warning
-:: 4201 anonymous struct/union used
-:: 4100 unreferenced formal parameter
-:: 4189 unused local variable
-:: FC = full path of files in output
-:: Fm = create symbol map
-:: //Zi = output debug data pdb
-:: Z7 = inject debug data in obj
-:: Od = disable ALL compiler optimizations
-:: Oi = use compiler intrinsics (direct asm func calls) instead of CRT versions
-:: GR- = turn off C++ runtime type info
-:: -Gm- = disable incremental rebuild
-:: EHa = disable C++ exception handling (try catch)
-:: MT = static link CRT
-:: opt:ref = only compile external functions which are referenced
+:DoEnd
+popd
+popd
